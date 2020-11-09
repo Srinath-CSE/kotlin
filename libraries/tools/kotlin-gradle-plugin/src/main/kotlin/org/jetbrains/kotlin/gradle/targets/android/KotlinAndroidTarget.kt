@@ -156,10 +156,10 @@ open class KotlinAndroidTarget(
 
             if (publishLibraryVariantsGroupedByFlavor) {
                 JointAndroidKotlinTargetComponent(
-                    this@KotlinAndroidTarget,
-                    nestedVariants,
-                    flavorGroupNameParts,
-                    nestedVariants.flatMap { it.sourcesArtifacts }.toSet()
+                    target = this@KotlinAndroidTarget,
+                    nestedVariants = nestedVariants.filter { it.publishable }.toSet(),
+                    flavorNames = flavorGroupNameParts,
+                    sourcesArtifacts = nestedVariants.filter { it.publishable }.flatMap { it.sourcesArtifacts }.toSet()
                 )
             } else {
                 nestedVariants.single()

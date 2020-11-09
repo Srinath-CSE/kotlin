@@ -202,7 +202,9 @@ class KotlinMetadataTargetConfigurator(kotlinPluginVersion: String) :
     }
 
     private fun isMetadataCompilationSupported(project: Project, sourceSet: KotlinSourceSet): Boolean {
-        val platforms = compilationsBySourceSets(project)[sourceSet].orEmpty().map { it.target.platformType }.distinct()
+        val platforms = compilationsBySourceSets(project)[sourceSet].orEmpty()
+            .filter { it.target !is KotlinMetadataTarget }
+            .map { it.target.platformType }.distinct()
 
         /*
         Android and jvm do share the JVM backend which is not supported for metadata compilation
@@ -540,6 +542,11 @@ class KotlinMetadataTargetConfigurator(kotlinPluginVersion: String) :
         }
 }
 
+/**
+ * @return All common source sets that can potentially be published. Right now, not all combinations of platforms actually
+ * support metadata compilation (see [KotlinMetadataTargetConfigurator.isMetadataCompilationSupported].
+ * Those compilations will be created but the corresponding tasks will be disabled.
+ */
 internal fun getPublishedCommonSourceSets(project: Project): Set<KotlinSourceSet> {
     val compilationsBySourceSet: Map<KotlinSourceSet, Set<KotlinCompilation<*>>> =
         compilationsBySourceSets(project)

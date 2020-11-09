@@ -24,8 +24,8 @@ import org.jetbrains.kotlin.frontend.di.configureModule
 import org.jetbrains.kotlin.frontend.di.configureStandardResolveComponents
 import org.jetbrains.kotlin.frontend.java.di.configureJavaSpecificComponents
 import org.jetbrains.kotlin.frontend.java.di.initializeJavaSpecificComponents
+import org.jetbrains.kotlin.idea.configuration.IdeBuiltInsLoadingState
 import org.jetbrains.kotlin.idea.project.IdeaEnvironment
-import org.jetbrains.kotlin.incremental.components.LookupTracker
 import org.jetbrains.kotlin.load.java.lazy.ModuleClassResolver
 import org.jetbrains.kotlin.load.java.lazy.ModuleClassResolverImpl
 import org.jetbrains.kotlin.load.kotlin.PackagePartProvider
@@ -204,7 +204,7 @@ class CompositeResolverForModuleFactory(
                 languageVersionSettings,
                 configureJavaClassFinder = null,
                 javaClassTracker = null,
-                useBuiltInsProvider = targetPlatform.isJvm() // use JVM BuiltIns only for completely JVM modules
+                useBuiltInsProvider = IdeBuiltInsLoadingState.isFromDependenciesForJvm && targetPlatform.isJvm() // use JVM BuiltIns only for completely JVM modules
             )
         }
 

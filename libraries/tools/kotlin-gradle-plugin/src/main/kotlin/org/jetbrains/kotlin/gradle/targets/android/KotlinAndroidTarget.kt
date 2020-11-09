@@ -125,11 +125,10 @@ open class KotlinAndroidTarget(
 
                 val artifactClassifier = buildTypeName.takeIf { it != "release" && publishLibraryVariantsGroupedByFlavor }
 
-                val usageContexts = createAndroidUsageContexts(androidVariant, compilation, artifactClassifier)
                 createKotlinVariant(
                     lowerCamelCaseName(compilation.target.name, *flavorGroupNameParts.toTypedArray()),
                     compilation,
-                    usageContexts
+                    createAndroidUsageContexts(androidVariant, compilation, artifactClassifier)
                 ).apply {
                     publishable = isVariantPublished(androidVariant)
                     sourcesArtifacts = setOf(

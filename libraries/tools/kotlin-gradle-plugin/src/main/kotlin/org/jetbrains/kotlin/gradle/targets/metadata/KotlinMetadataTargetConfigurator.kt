@@ -164,7 +164,7 @@ class KotlinMetadataTargetConfigurator(kotlinPluginVersion: String) :
 
     private fun setupDependencyTransformationForCommonSourceSets(target: KotlinMetadataTarget) {
         target.project.whenEvaluated {
-            val publishedCommonSourceSets: Set<KotlinSourceSet> = getPublishedCommonSourceSets(project)
+            val publishedCommonSourceSets: Set<KotlinSourceSet> = getCommonSourceSetsForMetadataCompilation(project)
 
             kotlinExtension.sourceSets.all {
                 setupDependencyTransformationForSourceSet(target.project, it, it in publishedCommonSourceSets)
@@ -178,7 +178,7 @@ class KotlinMetadataTargetConfigurator(kotlinPluginVersion: String) :
     ) = target.project.whenEvaluated {
         // Do this after all targets are configured by the user build script
 
-        val publishedCommonSourceSets: Set<KotlinSourceSet> = getPublishedCommonSourceSets(project)
+        val publishedCommonSourceSets: Set<KotlinSourceSet> = getCommonSourceSetsForMetadataCompilation(project)
         val hostSpecificSourceSets: Set<KotlinSourceSet> = getHostSpecificSourceSets(project).toSet()
 
         val sourceSetsWithMetadataCompilations: Map<KotlinSourceSet, AbstractKotlinCompilation<*>> = publishedCommonSourceSets
@@ -547,7 +547,7 @@ class KotlinMetadataTargetConfigurator(kotlinPluginVersion: String) :
  * support metadata compilation (see [KotlinMetadataTargetConfigurator.isMetadataCompilationSupported].
  * Those compilations will be created but the corresponding tasks will be disabled.
  */
-internal fun getPublishedCommonSourceSets(project: Project): Set<KotlinSourceSet> {
+internal fun getCommonSourceSetsForMetadataCompilation(project: Project): Set<KotlinSourceSet> {
     val compilationsBySourceSet: Map<KotlinSourceSet, Set<KotlinCompilation<*>>> =
         compilationsBySourceSets(project)
 
